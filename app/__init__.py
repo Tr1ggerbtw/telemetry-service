@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
-from app.routes.routes import auth
-
-db = SQLAlchemy()
+from app.db import db
+from app.routes.auth import auth
+# from app.routes.locations import locations
+# from app.routes.sensors import sensors
+# from app.routes.telemetry import telemetry
 
 def create_app():
     app = Flask(__name__)
@@ -11,6 +13,9 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(auth)
+    # app.register_blueprint(locations)
+    # app.register_blueprint(sensors)
+    # app.register_blueprint(telemetry)
 
     return app
 

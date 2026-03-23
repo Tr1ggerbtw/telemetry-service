@@ -1,4 +1,5 @@
-from app import create_app, db, models
+from app import create_app, models
+from app.db import db
 app = create_app()
 
 if __name__ == '__main__':
