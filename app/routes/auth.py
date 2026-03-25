@@ -35,7 +35,7 @@ def login():
         return {"error": "Invalid credentials"}, 401
 
     if(check_password_hash(user.password, password)):
-        access_token = create_access_token(identity=user.user_id) 
+        access_token = create_access_token(identity=str(user.user_id)) 
         return {"token": access_token}, 200
-        
+
     return {"error": "Invalid credentials"}, 401
