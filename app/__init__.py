@@ -5,7 +5,7 @@ from app.db import db, jwt
 from app.routes.auth import auth
 from app.routes.locations import locations
 from app.routes.sensors import sensors
-# from app.routes.telemetry import telemetry
+from app.routes.telemetry import telemetry
 
 def create_app():
     app = Flask(__name__)
@@ -16,7 +16,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(locations)
     app.register_blueprint(sensors)
-    # app.register_blueprint(telemetry)
+    app.register_blueprint(telemetry)
 
     return app
 
