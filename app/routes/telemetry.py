@@ -1,6 +1,7 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
-from app.models import Telemetry, Sensor
+from app.models import Telemetry, Sensor, Location
 
 telemetry = Blueprint("telemetry", __name__)
 @telemetry.route("/telemetry-send", methods=['POST'])
@@ -22,4 +23,29 @@ def send():
     db.session.add(telemetry)
     db.session.commit()
     return {}, 201
-    
+
+@telemetry.route("/telemetry-history", methods=['GET'])
+@jwt_required()
+def get_history():
+    user_id = int(get_jwt_identity())
+    mac_address = request.args.get('mac_address')
+    limit = request.args.get('limit', 50, type=int)
+
+    if mac_address is None:
+        return {"error": "mac_address is required"}, 400
+
+    sensor = Sensor.query.filter_by(mac_address=mac_address).first()
+    if sensor is None:
+        return {"error": "Sensor not found"}, 404
+
+    location = Location.query.filter_by(location_id=sensor.location_id, user_id=user_id).first()
+    if location is None:
+        return {"error": "Forbidden"}, 403
+
+    records = Telemetry.query.filter_by(sensor_id=sensor.sensor_id)\
+        .order_by(Telemetry.timestamp.desc())\
+        .limit(limit)\
+        .all()
+
+    result = [{"telemetry_id": r.telemetry_id, "value": r.value, "timestamp": str(r.timestamp)} for r in records]
+    return {"data": result}, 200
