@@ -15,7 +15,7 @@ def register():
     if(password == None or email == None):
         return {}, 400
 
-    if(is_valid_email(email)) is None:
+    if(is_valid_email(email)) == False:
         return {}, 400
     
     if User.query.filter_by(email=email).first() is not None:
