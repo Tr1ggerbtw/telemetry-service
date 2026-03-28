@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
 from app.models import Telemetry, Sensor, Location
 from app.validators import is_valid_telemetry_value
+from datetime import datetime, timezone
 
 telemetry = Blueprint("telemetry", __name__)
 @telemetry.route("/telemetry-send", methods=['POST'])
@@ -20,8 +21,8 @@ def send():
     if not(is_valid_telemetry_value(value)):
         return {"error": "Value out of physical range"}, 400
     
-    new_telemetry = Telemetry(sensor_id=sensor_id, value=value)
-    db.session.add(telemetry)
+    new_telemetry = Telemetry(sensor_id=sensor_id, value=value, timestamp=datetime.now(timezone.utc))
+    db.session.add(new_telemetry)
     db.session.commit()
     return {}, 201
 
