@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
 from app.models import Telemetry, Sensor, Location
+from app.validators import is_valid_telemetry_value
 
 telemetry = Blueprint("telemetry", __name__)
 @telemetry.route("/telemetry-send", methods=['POST'])
@@ -16,7 +17,7 @@ def send():
     if Sensor.query.filter_by(sensor_id=sensor_id).first() is None: 
         return {}, 404
     
-    if not(0 <= value <= 100):
+    if not(is_valid_telemetry_value(value)):
         return {"error": "Value out of physical range"}, 400
     
     new_telemetry = Telemetry(sensor_id=sensor_id, value=value)

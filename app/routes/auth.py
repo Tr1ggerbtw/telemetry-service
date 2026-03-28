@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token
 import re
 from app.db import db
 from app.models import User
+from app.validators import is_valid_email
 auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=['POST'])
@@ -14,9 +15,7 @@ def register():
     if(password == None or email == None):
         return {}, 400
 
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-
-    if(re.match(email_pattern, email)) is None:
+    if(is_valid_email(email)) is None:
         return {}, 400
     
     if User.query.filter_by(email=email).first() is not None:
