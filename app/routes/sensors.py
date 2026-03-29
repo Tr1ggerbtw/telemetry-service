@@ -10,6 +10,7 @@ def create_sensor():
     user_id = int(get_jwt_identity())
     data = request.get_json()
     location_id = data.get('location_id')
+    address = data.get('mac_address')
 
     if location_id is None or address is None:
         return {}, 400
@@ -17,8 +18,6 @@ def create_sensor():
     if Location.query.filter_by(location_id=location_id, user_id=user_id).first() is None:
         return {"error": "Location not found"}, 403
     
-    address = data.get('mac_address')
-
     if Sensor.query.filter_by(mac_address=address).first() is not None: 
         return {"Error": "Sensor with such address already exists"}, 409
     
