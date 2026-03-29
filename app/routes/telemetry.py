@@ -15,12 +15,12 @@ def send():
     if sensor_id is None or value is None:
         return {"error": "sensor_id and value are required"}, 400
     
-    if Sensor.query.filter_by(sensor_id=sensor_id).first() is None: 
-        return {}, 404
-    
     if not(is_valid_telemetry_value(value)):
         return {"error": "Value out of physical range"}, 400
-    
+
+    if Sensor.query.filter_by(sensor_id=sensor_id).first() is None: 
+        return {}, 404
+        
     new_telemetry = Telemetry(sensor_id=sensor_id, value=value, timestamp=datetime.now(timezone.utc))
     db.session.add(new_telemetry)
     db.session.commit()
