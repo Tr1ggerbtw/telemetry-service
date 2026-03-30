@@ -11,8 +11,8 @@ def create_location():
     data = request.get_json()
     name = data.get('name')
 
-    if(name == None):
-        return {}, 400
+    if not name:
+        return {"error": "name is required"}, 400
             
     new_location = Location(name=name, user_id=user_id)
     db.session.add(new_location)
