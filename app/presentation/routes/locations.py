@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
-from app.models import Location
+from app.infrastructure.orm_models import Location
 locations = Blueprint("locations", __name__)
 
 @locations.route('/locations', methods=['POST'])

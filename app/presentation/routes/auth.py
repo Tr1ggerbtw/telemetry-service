@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 import re
 from app.db import db
-from app.models import User
+from app.infrastructure.orm_models import User
 from app.validators import is_valid_email
 auth = Blueprint("auth", __name__)
 

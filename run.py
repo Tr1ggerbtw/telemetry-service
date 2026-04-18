@@ -1,5 +1,6 @@
-from app import create_app, models
+from app import create_app
 from app.db import db
+from app.infrastructure import orm_models
 app = create_app()
 
 if __name__ == '__main__':

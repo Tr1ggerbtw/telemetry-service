@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.db import db 
-from app.models import Sensor, Location, User
+from app.infrastructure.orm_models import Sensor, Location, User
 
 sensors = Blueprint("sensors", __name__)
 @sensors.route("/create-sensor", methods=['POST'] )
