@@ -6,3 +6,6 @@ class InvalidEmailError(DomainError):
 
 class InvalidTelemetryValueError(DomainError):
     pass
+
+class InvalidMacAddressError(DomainError):
+    pass
