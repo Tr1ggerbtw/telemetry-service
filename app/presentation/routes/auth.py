@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token
 import re
 from app.db import db
 from app.infrastructure.orm_models import User
-from app.validators import is_valid_email
+from app.domain.validators import is_valid_email
 auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=['POST'])

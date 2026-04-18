@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.db import db
 from app.infrastructure.orm_models import Telemetry, Sensor, Location
-from app.validators import is_valid_telemetry_value
+from app.domain.validators import is_valid_telemetry_value
 from datetime import datetime, timezone
 
 telemetry = Blueprint("telemetry", __name__)

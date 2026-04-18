@@ -1,4 +1,4 @@
-from app.validators import is_valid_email, is_valid_telemetry_value
+from app.domain.validators import is_valid_email, is_valid_telemetry_value
 
 def test_valid_email():
     assert is_valid_email("valid@gmail.com") is True
