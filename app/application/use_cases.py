@@ -21,6 +21,21 @@ class RegisterUserUseCase:
 
         self.user_repo.save(new_user)
 
+
+class LoginUseCase:
+    def __init__(self, user_repo: IUserRepository):
+        self.user_repo = user_repo
+
+    def execute(self, dto: LoginUserDTO) -> User:
+        target_email = Email(dto.email)
+        user = self.user_repo.get_by_email(target_email)
+        if user is None:
+            raise DomainError("Invalid credentials")
+        if not check_password_hash(user.password_hash, dto.password):
+            raise DomainError("Invalid credentials")
+        return user
+
+
 class CreateLocationUseCase:
     def __init__(self, location_repo: ILocationRepository):
         self.location_repo = location_repo
@@ -55,3 +70,21 @@ class RecordTelemetryUseCase:
         )
         
         self.telemetry_repo.save(new_telemetry)
+
+class GetTelemetryHistoryUseCase:
+    def __init__(self, sensor_repo: ISensorRepository, location_repo: ILocationRepository, telemetry_repo: ITelemetryRepository):
+        self.sensor_repo = sensor_repo
+        self.location_repo = location_repo
+        self.telemetry_repo = telemetry_repo
+
+    def execute(self, dto: GetTelemetryHistoryDTO) -> list:
+        mac = MacAddress(dto.mac_address)
+        sensor = self.sensor_repo.get_by_mac(mac)
+        if sensor is None:
+            raise DomainError("Sensor not found")
+
+        location = self.location_repo.get_by_id(sensor.location_id)
+        if location is None or location.user_id != dto.user_id:
+            raise DomainError("Access denied")
+
+        return self.telemetry_repo.get_by_sensor_id(sensor.sensor_id, dto.limit)
