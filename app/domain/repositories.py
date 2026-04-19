@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.domain.entities import User, Email, Sensor, MacAddress, Telemetry
+from app.domain.entities import User, Email, Sensor, MacAddress, Telemetry, Location
 
 class IUserRepository(ABC):
     @abstractmethod
@@ -23,11 +23,15 @@ class ISensorRepository(ABC):
     @abstractmethod
     def save(self, sensor: Sensor) -> None:
         pass
-        
+
     @abstractmethod
     def get_by_mac(self, mac: MacAddress) -> Sensor | None:
         pass
-        
+
+    @abstractmethod
+    def get_by_id(self, sensor_id: int) -> Sensor | None:
+        pass
+
     @abstractmethod
     def delete(self, sensor: Sensor) -> None:
         pass
@@ -35,4 +39,8 @@ class ISensorRepository(ABC):
 class ITelemetryRepository(ABC):
     @abstractmethod
     def save(self, telemetry: Telemetry) -> None:
+        pass
+
+    @abstractmethod
+    def get_by_sensor_id(self, sensor_id: int, limit: int) -> list[Telemetry]:
         pass
