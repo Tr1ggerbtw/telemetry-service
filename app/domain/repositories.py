@@ -10,6 +10,15 @@ class IUserRepository(ABC):
     def get_by_email(self, email: Email) -> User | None:
         pass
 
+class ILocationRepository(ABC):
+    @abstractmethod
+    def save(self, location: Location) -> None:
+        pass
+
+    @abstractmethod
+    def get_by_id(self, location_id: int) -> Location | None:
+        pass
+
 class ISensorRepository(ABC):
     @abstractmethod
     def save(self, sensor: Sensor) -> None:
