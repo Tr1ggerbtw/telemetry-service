@@ -1,9 +1,9 @@
-from app.application.dtos import RegisterUserDTO, CreateLocationDTO, AddSensorDTO, RecordTelemetryDTO
+from app.application.dtos import RegisterUserDTO, CreateLocationDTO, AddSensorDTO, RecordTelemetryDTO, LoginUserDTO, DeleteSensorDTO, GetTelemetryHistoryDTO
 from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress
 from app.domain.exceptions import DomainError
 from app.domain.factories import TelemetryFactory 
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class RegisterUserUseCase:
     def __init__(self, user_repo: IUserRepository):
@@ -45,13 +45,18 @@ class CreateLocationUseCase:
         self.location_repo.save(new_location)
 
 
+
 class AddSensorUseCase:
-    def __init__(self, sensor_repo: ISensorRepository):
+    def __init__(self, sensor_repo: ISensorRepository, location_repo: ILocationRepository):
         self.sensor_repo = sensor_repo
+        self.location_repo = location_repo
 
     def execute(self, dto: AddSensorDTO) -> None:
-        mac = MacAddress(dto.mac_address)
+        location = self.location_repo.get_by_id(dto.location_id)
+        if location is None or location.user_id != dto.user_id:
+            raise DomainError("Location not found or access denied")
 
+        mac = MacAddress(dto.mac_address)
         if self.sensor_repo.get_by_mac(mac) is not None:
             raise DomainError(f"Sensor with MAC {dto.mac_address} already exists")
 
@@ -59,16 +64,37 @@ class AddSensorUseCase:
         self.sensor_repo.save(new_sensor)
 
 
+class DeleteSensorUseCase:
+    def __init__(self, sensor_repo: ISensorRepository, location_repo: ILocationRepository):
+        self.sensor_repo = sensor_repo
+        self.location_repo = location_repo
+
+    def execute(self, dto: DeleteSensorDTO) -> None:
+        sensor = self.sensor_repo.get_by_id(dto.sensor_id)
+        if sensor is None:
+            raise DomainError("Sensor not found")
+
+        location = self.location_repo.get_by_id(sensor.location_id)
+        if location is None or location.user_id != dto.user_id:
+            raise DomainError("Access denied")
+
+        self.sensor_repo.delete(sensor)
+
+
 class RecordTelemetryUseCase:
-    def __init__(self, telemetry_repo: ITelemetryRepository):
+    def __init__(self, telemetry_repo: ITelemetryRepository, sensor_repo: ISensorRepository):
         self.telemetry_repo = telemetry_repo
+        self.sensor_repo = sensor_repo
 
     def execute(self, dto: RecordTelemetryDTO) -> None:
+        sensor = self.sensor_repo.get_by_id(dto.sensor_id)
+        if sensor is None:
+            raise DomainError("Sensor not found")
+
         new_telemetry = TelemetryFactory.create(
-            sensor_id=dto.sensor_id, 
+            sensor_id=dto.sensor_id,
             value=dto.value
         )
-        
         self.telemetry_repo.save(new_telemetry)
 
 class GetTelemetryHistoryUseCase:
