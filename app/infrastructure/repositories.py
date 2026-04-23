@@ -22,6 +22,17 @@ class SqlAlchemyUserRepository(IUserRepository):
             email=Email(orm_user.email),
             password_hash=orm_user.password
         )
+    
+    def get_by_id(self, user_id: int) -> User | None:
+        orm_user = UserModel.query.filter_by(user_id=user_id).first()
+        if orm_user is None:
+            return None
+        
+        return User(
+            user_id=orm_user.user_id,
+            email=Email(orm_user.email),
+            password_hash=orm_user.password
+        )
 
 class SqlAlchemyLocationRepository(ILocationRepository):
     def save(self, location: Location) -> None:
@@ -69,6 +80,18 @@ class SqlAlchemySensorRepository(ISensorRepository):
             db.session.delete(orm_sensor)
             db.session.commit()
 
+
+    def get_by_id(self, sensor_id: int) -> Sensor | None:
+        orm_sensor = SensorModel.query.filter_by(sensor_id=sensor_id).first()
+        if orm_sensor is None:
+            return None
+        return Sensor(
+        sensor_id=orm_sensor.sensor_id,
+        mac_address=MacAddress(orm_sensor.mac_address),
+        location_id=orm_sensor.location_id
+    )
+
+
 class SqlAlchemyTelemetryRepository(ITelemetryRepository):
     def save(self, telemetry: Telemetry) -> None:
         orm_telemetry = TelemetryModel(
@@ -79,3 +102,19 @@ class SqlAlchemyTelemetryRepository(ITelemetryRepository):
         db.session.add(orm_telemetry)
         db.session.commit()
         telemetry.telemetry_id = orm_telemetry.telemetry_id
+
+    def get_by_sensor_id(self, sensor_id: int, limit: int) -> list[Telemetry]:
+        orm_records = TelemetryModel.query\
+        .filter_by(sensor_id=sensor_id)\
+        .order_by(TelemetryModel.timestamp.desc())\
+        .limit(limit)\
+        .all()
+        return [
+            Telemetry(
+                telemetry_id=r.telemetry_id,
+                sensor_id=r.sensor_id,
+                timestamp=r.timestamp,
+                value=r.value
+            )
+            for r in orm_records
+        ]
