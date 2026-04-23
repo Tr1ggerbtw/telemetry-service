@@ -9,3 +9,6 @@ class InvalidTelemetryValueError(DomainError):
 
 class InvalidMacAddressError(DomainError):
     pass
+
+class AccessDeniedError(DomainError):
+    pass
