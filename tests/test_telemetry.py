@@ -22,6 +22,7 @@ def test_send_telemetry_success(client):
     assert response.status_code == 201
 
 def test_send_telemetry_invalid_value(client):
+    create_sensor(client)
     response = client.post('/telemetry-send', json={
         "sensor_id": 1,
         "value": 999
