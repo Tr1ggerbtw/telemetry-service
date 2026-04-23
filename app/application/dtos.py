@@ -14,7 +14,8 @@ class CreateLocationDTO:
 class AddSensorDTO:
     mac_address: str
     location_id: int
-
+    user_id: int
+    
 @dataclass
 class RecordTelemetryDTO:
     sensor_id: int
