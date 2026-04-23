@@ -1,7 +1,9 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.db import db
-from app.infrastructure.orm_models import Location
+from app.application.dtos import CreateLocationDTO
+from app.application.dependencies import get_create_location_use_case
+from app.domain.exceptions import DomainError
+
 locations = Blueprint("locations", __name__)
 
 @locations.route('/locations', methods=['POST'])
@@ -14,8 +16,10 @@ def create_location():
     if not name:
         return {"error": "name is required"}, 400
             
-    new_location = Location(name=name, user_id=user_id)
-    db.session.add(new_location)
-    db.session.commit()
-    return {}, 201
+    dto = CreateLocationDTO(name, user_id)
+    try:
+        get_create_location_use_case().execute(dto)
+        return {}, 201
+    except DomainError as e:
+        return {"error": str(e)}, 400
         
