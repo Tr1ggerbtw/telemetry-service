@@ -1,7 +1,7 @@
 from app.application.dtos import RegisterUserDTO, CreateLocationDTO, AddSensorDTO, RecordTelemetryDTO, LoginUserDTO, DeleteSensorDTO, GetTelemetryHistoryDTO
 from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress
-from app.domain.exceptions import DomainError
+from app.domain.exceptions import DomainError, AccessDeniedError
 from app.domain.factories import TelemetryFactory 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -54,7 +54,7 @@ class AddSensorUseCase:
     def execute(self, dto: AddSensorDTO) -> None:
         location = self.location_repo.get_by_id(dto.location_id)
         if location is None or location.user_id != dto.user_id:
-            raise DomainError("Location not found or access denied")
+            raise AccessDeniedError("Location not found or access denied")
 
         mac = MacAddress(dto.mac_address)
         if self.sensor_repo.get_by_mac(mac) is not None:
@@ -76,7 +76,7 @@ class DeleteSensorUseCase:
 
         location = self.location_repo.get_by_id(sensor.location_id)
         if location is None or location.user_id != dto.user_id:
-            raise DomainError("Access denied")
+            raise AccessDeniedError("Access denied")
 
         self.sensor_repo.delete(sensor)
 
