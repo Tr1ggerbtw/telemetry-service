@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.application.dtos import RecordTelemetryDTO, GetTelemetryHistoryDTO
+from app.application.commands import RecordTelemetryCommand
+from app.application.queries import GetTelemetryHistoryQuery
 from app.application.dependencies import get_record_telemetry_use_case, get_telemetry_history_use_case
 from app.domain.exceptions import InvalidTelemetryValueError, DomainError
 
@@ -16,9 +17,9 @@ def send():
     if sensor_id is None or value is None:
         return {"error": "sensor_id and value are required"}, 400
 
-    dto = RecordTelemetryDTO(sensor_id, value)
+    command = RecordTelemetryCommand(sensor_id, value)
     try:
-        get_record_telemetry_use_case().execute(dto)
+        get_record_telemetry_use_case().execute(command)
         return {}, 201
     except InvalidTelemetryValueError:
         return {"error": "Invalid telemetry value"}, 400
@@ -36,9 +37,9 @@ def get_history():
     if mac_address is None:
         return {"error": "mac_address is required"}, 400
 
-    dto = GetTelemetryHistoryDTO(mac_address, user_id, limit)
+    query = GetTelemetryHistoryQuery(mac_address, user_id, limit)
     try:
-        records = get_telemetry_history_use_case().execute(dto)
+        records = get_telemetry_history_use_case().execute(query)
         result = [
             {
                 "telemetry_id": t.telemetry_id,
