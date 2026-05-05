@@ -4,58 +4,45 @@ from app.infrastructure.repositories import (
     SqlAlchemySensorRepository,
     SqlAlchemyTelemetryRepository
 )
-from app.application.use_cases import (
-    RegisterUserUseCase,
-    LoginUseCase,
-    CreateLocationUseCase,
-    AddSensorUseCase,
-    DeleteSensorUseCase,
-    RecordTelemetryUseCase,
-    GetTelemetryHistoryUseCase
+from app.application.handlers import (
+    RegisterUserCommandHandler,
+    LoginCommandHandler,
+    CreateLocationCommandHandler,
+    AddSensorCommandHandler,
+    DeleteSensorCommandHandler,
+    RecordTelemetryCommandHandler,
+    GetTelemetryHistoryQueryHandler
 )
 
+def get_register_handler() -> RegisterUserCommandHandler:
+    return RegisterUserCommandHandler(user_repo=SqlAlchemyUserRepository())
 
-def get_register_use_case() -> RegisterUserUseCase:
-    return RegisterUserUseCase(
-        user_repo=SqlAlchemyUserRepository()
-    )
+def get_login_handler() -> LoginCommandHandler:
+    return LoginCommandHandler(user_repo=SqlAlchemyUserRepository())
 
+def get_create_location_handler() -> CreateLocationCommandHandler:
+    return CreateLocationCommandHandler(location_repo=SqlAlchemyLocationRepository())
 
-def get_login_use_case() -> LoginUseCase:
-    return LoginUseCase(
-        user_repo=SqlAlchemyUserRepository()
-    )
-
-
-def get_create_location_use_case() -> CreateLocationUseCase:
-    return CreateLocationUseCase(
-        location_repo=SqlAlchemyLocationRepository()
-    )
-
-
-def get_add_sensor_use_case() -> AddSensorUseCase:
-    return AddSensorUseCase(
+def get_add_sensor_handler() -> AddSensorCommandHandler:
+    return AddSensorCommandHandler(
         sensor_repo=SqlAlchemySensorRepository(),
         location_repo=SqlAlchemyLocationRepository()
     )
 
-
-def get_delete_sensor_use_case() -> DeleteSensorUseCase:
-    return DeleteSensorUseCase(
+def get_delete_sensor_handler() -> DeleteSensorCommandHandler:
+    return DeleteSensorCommandHandler(
         sensor_repo=SqlAlchemySensorRepository(),
         location_repo=SqlAlchemyLocationRepository()
     )
 
-
-def get_record_telemetry_use_case() -> RecordTelemetryUseCase:
-    return RecordTelemetryUseCase(
+def get_record_telemetry_handler() -> RecordTelemetryCommandHandler:
+    return RecordTelemetryCommandHandler(
         telemetry_repo=SqlAlchemyTelemetryRepository(),
         sensor_repo=SqlAlchemySensorRepository()
     )
 
-
-def get_telemetry_history_use_case() -> GetTelemetryHistoryUseCase:
-    return GetTelemetryHistoryUseCase(
+def get_telemetry_history_handler() -> GetTelemetryHistoryQueryHandler:
+    return GetTelemetryHistoryQueryHandler(
         sensor_repo=SqlAlchemySensorRepository(),
         location_repo=SqlAlchemyLocationRepository(),
         telemetry_repo=SqlAlchemyTelemetryRepository()

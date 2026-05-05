@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.application.commands import AddSensorCommand, DeleteSensorCommand
-from app.application.dependencies import get_add_sensor_use_case, get_delete_sensor_use_case 
+from app.application.dependencies import get_add_sensor_handler, get_delete_sensor_handler 
 from app.domain.exceptions import InvalidMacAddressError, DomainError, AccessDeniedError
 
 sensors = Blueprint("sensors", __name__)
@@ -19,7 +19,7 @@ def create_sensor():
     command = AddSensorCommand(address, location_id, user_id);
 
     try:
-        get_add_sensor_use_case().execute(command)
+        get_add_sensor_handler().execute(command)
         return {}, 201
     except InvalidMacAddressError:
         return {"error": "Invalid MAC address format"}, 400
@@ -39,7 +39,7 @@ def delete_sensor():
     command = DeleteSensorCommand(sensor_id, user_id)
 
     try:
-        get_delete_sensor_use_case().execute(command)
+        get_delete_sensor_handler().execute(command)
         return {}, 204
     except AccessDeniedError:
         return {"error": "Access denied"}, 403

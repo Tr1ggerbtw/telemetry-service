@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token
-from app.application.dependencies import get_register_use_case, get_login_use_case
+from app.application.dependencies import get_register_handler, get_login_handler
 from app.application.commands import RegisterUserCommand, LoginUserCommand
 from app.domain.exceptions import DomainError, InvalidEmailError
 
@@ -18,7 +18,7 @@ def register():
     command = RegisterUserCommand(email=email, password=password)
 
     try:
-        get_register_use_case().execute(command)
+        get_register_handler().execute(command)
         return {}, 201
     except InvalidEmailError:
         return {"error": "Invalid email format"}, 400
@@ -38,7 +38,7 @@ def login():
     command = LoginUserCommand(email=email, password=password)
 
     try:
-        user = get_login_use_case().execute(command)
+        user = get_login_handler().execute(command)
         access_token = create_access_token(identity=str(user.user_id))
         return {"token": access_token}, 200
     except DomainError:
