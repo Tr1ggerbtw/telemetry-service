@@ -18,7 +18,7 @@ def register():
     command = RegisterUserCommand(email=email, password=password)
 
     try:
-        get_register_handler().execute(command)
+        get_register_handler().handle(command)
         return {}, 201
     except InvalidEmailError:
         return {"error": "Invalid email format"}, 400
@@ -38,8 +38,8 @@ def login():
     command = LoginUserCommand(email=email, password=password)
 
     try:
-        user = get_login_handler().execute(command)
-        access_token = create_access_token(identity=str(user.user_id))
+        user_id = get_login_handler().handle(command)
+        access_token = create_access_token(identity=str(user_id))
         return {"token": access_token}, 200
     except DomainError:
         return {"error": "Invalid credentials"}, 401

@@ -18,7 +18,7 @@ def create_location():
             
     command = CreateLocationCommand(name, user_id)
     try:
-        get_create_location_handler().execute(command)
+        get_create_location_handler().handle(command)
         return {}, 201
     except DomainError as e:
         return {"error": str(e)}, 400

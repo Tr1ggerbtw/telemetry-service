@@ -19,7 +19,7 @@ def send():
 
     command = RecordTelemetryCommand(sensor_id, value)
     try:
-        get_record_telemetry_handler().execute(command)
+        get_record_telemetry_handler().handle(command)
         return {}, 201
     except InvalidTelemetryValueError:
         return {"error": "Invalid telemetry value"}, 400
@@ -39,7 +39,7 @@ def get_history():
 
     query = GetTelemetryHistoryQuery(mac_address, user_id, limit)
     try:
-        records = get_telemetry_history_handler().execute(query)
+        records = get_telemetry_history_handler().handle(query)
         result = [
             {
                 "telemetry_id": t.telemetry_id,

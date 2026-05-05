@@ -19,7 +19,7 @@ def create_sensor():
     command = AddSensorCommand(address, location_id, user_id);
 
     try:
-        get_add_sensor_handler().execute(command)
+        get_add_sensor_handler().handle(command)
         return {}, 201
     except InvalidMacAddressError:
         return {"error": "Invalid MAC address format"}, 400
@@ -39,7 +39,7 @@ def delete_sensor():
     command = DeleteSensorCommand(sensor_id, user_id)
 
     try:
-        get_delete_sensor_handler().execute(command)
+        get_delete_sensor_handler().handle(command)
         return {}, 204
     except AccessDeniedError:
         return {"error": "Access denied"}, 403
