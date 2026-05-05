@@ -1,0 +1,83 @@
+@baseUrl = http://127.0.0.1:5000
+
+### Register
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "email": "test@kpi.ua",
+    "password": "superpassword123"
+}
+
+
+### Not Register ( Login ) 
+# @name loginRequest
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "test@kpi.ua",
+    "password": "superpassword123"
+}
+
+### Token
+@token = {{loginRequest.response.body.token}}
+
+### Create Location
+POST {{baseUrl}}/locations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "SomeLocation3412"
+}
+
+### Create Sensor
+POST {{baseUrl}}/create-sensor
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "mac_address": "00:1A:2B:3C:4D:5E",
+    "location_id": 1
+}
+
+### Telemetry Send
+POST {{baseUrl}}/telemetry-send
+Content-Type: application/json
+
+{
+    "sensor_id": 1,
+    "value": 24.5
+}
+
+### Telemetry Send
+POST {{baseUrl}}/telemetry-send
+Content-Type: application/json
+
+{
+    "sensor_id": 1,
+    "value": 54.5
+}
+
+### Telemetry Send
+POST {{baseUrl}}/telemetry-send
+Content-Type: application/json
+
+{
+    "sensor_id": 1,
+    "value": 12.5
+}
+
+### Get History of Telemetry( Lim 10 )
+GET {{baseUrl}}/telemetry-history?mac_address=00:1A:2B:3C:4D:5E&limit=10
+Authorization: Bearer {{token}}
+
+### Delete Sensor
+DELETE {{baseUrl}}/delete-sensor
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "sensor_id": 1
+}
