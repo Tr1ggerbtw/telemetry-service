@@ -1,6 +1,8 @@
 from app.application.commands import RegisterUserCommand, CreateLocationCommand, AddSensorCommand, RecordTelemetryCommand, LoginUserCommand, DeleteSensorCommand
 from app.application.queries import GetTelemetryHistoryQuery
 from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
+from app.application.read_model import TelemetryReadModel
+from app.application.read_repository import ITelemetryReadRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress
 from app.domain.exceptions import DomainError, AccessDeniedError
 from app.domain.factories import TelemetryFactory
@@ -80,17 +82,8 @@ class RecordTelemetryCommandHandler:
 
 
 class GetTelemetryHistoryQueryHandler:
-    def __init__(self, sensor_repo: ISensorRepository, location_repo: ILocationRepository, telemetry_repo: ITelemetryRepository):
-        self._sensor_repo = sensor_repo
-        self._location_repo = location_repo
-        self._telemetry_repo = telemetry_repo
+    def __init__(self, read_repo: ITelemetryReadRepository):
+        self._read_repo = read_repo
 
-    def handle(self, query: GetTelemetryHistoryQuery) -> list:
-        mac = MacAddress(query.mac_address)
-        sensor = self._sensor_repo.get_by_mac(mac)
-        if sensor is None:
-            raise DomainError("Sensor not found")
-        location = self._location_repo.get_by_id(sensor.location_id)
-        if location is None or location.user_id != query.user_id:
-            raise DomainError("Access denied")
-        return self._telemetry_repo.get_by_sensor_id(sensor.sensor_id, query.limit)
+    def handle(self, query: GetTelemetryHistoryQuery) -> list[TelemetryReadModel]:
+        return self._read_repo.get_history(query.mac_address, query.user_id, query.limit)
