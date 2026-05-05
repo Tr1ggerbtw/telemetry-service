@@ -1,6 +1,8 @@
 from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress, Telemetry
 from app.infrastructure.orm_models import UserModel, LocationModel, SensorModel, TelemetryModel
+from app.application.read_repository import ITelemetryReadRepository
+from app.application.read_model import TelemetryReadModel
 from app.db import db
 
 class SqlAlchemyUserRepository(IUserRepository):
@@ -103,18 +105,23 @@ class SqlAlchemyTelemetryRepository(ITelemetryRepository):
         db.session.commit()
         telemetry.telemetry_id = orm_telemetry.telemetry_id
 
-    def get_by_sensor_id(self, sensor_id: int, limit: int) -> list[Telemetry]:
-        orm_records = TelemetryModel.query\
-        .filter_by(sensor_id=sensor_id)\
-        .order_by(TelemetryModel.timestamp.desc())\
-        .limit(limit)\
-        .all()
+        
+class SqlAlchemyTelemetryReadRepository(ITelemetryReadRepository):
+    def get_history(self, mac_address: str, user_id: int, limit: int) -> list[TelemetryReadModel]:
+        query = (
+            db.session.query(TelemetryModel)
+            .join(SensorModel, TelemetryModel.sensor_id == SensorModel.sensor_id)
+            .join(LocationModel, SensorModel.location_id == LocationModel.location_id)
+            .filter(SensorModel.mac_address == mac_address)
+            .filter(LocationModel.user_id == user_id)
+            .order_by(TelemetryModel.timestamp.desc())
+            .limit(limit)
+        )
+        
         return [
-            Telemetry(
-                telemetry_id=r.telemetry_id,
-                sensor_id=r.sensor_id,
-                timestamp=r.timestamp,
-                value=r.value
-            )
-            for r in orm_records
+            TelemetryReadModel(
+                telemetry_id=row.telemetry_id,
+                value=row.value,
+                timestamp=row.timestamp
+            ) for row in query.all()
         ]

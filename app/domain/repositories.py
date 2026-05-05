@@ -40,7 +40,3 @@ class ITelemetryRepository(ABC):
     @abstractmethod
     def save(self, telemetry: Telemetry) -> None:
         pass
-
-    @abstractmethod
-    def get_by_sensor_id(self, sensor_id: int, limit: int) -> list[Telemetry]:
-        pass

@@ -2,7 +2,8 @@ from app.infrastructure.repositories import (
     SqlAlchemyUserRepository,
     SqlAlchemyLocationRepository,
     SqlAlchemySensorRepository,
-    SqlAlchemyTelemetryRepository
+    SqlAlchemyTelemetryRepository,
+    SqlAlchemyTelemetryReadRepository
 )
 from app.application.handlers import (
     RegisterUserCommandHandler,
@@ -43,7 +44,5 @@ def get_record_telemetry_handler() -> RecordTelemetryCommandHandler:
 
 def get_telemetry_history_handler() -> GetTelemetryHistoryQueryHandler:
     return GetTelemetryHistoryQueryHandler(
-        sensor_repo=SqlAlchemySensorRepository(),
-        location_repo=SqlAlchemyLocationRepository(),
-        telemetry_repo=SqlAlchemyTelemetryRepository()
+        read_repo=SqlAlchemyTelemetryReadRepository()
     )
