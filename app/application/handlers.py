@@ -7,7 +7,9 @@ from app.application.read_repository import ITelemetryReadRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress
 from app.domain.exceptions import DomainError, AccessDeniedError
 from app.domain.factories import TelemetryFactory
+from app.domain.events import TelemetryRecorded
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timezone
 
 
 class RegisterUserCommandHandler:
@@ -72,10 +74,10 @@ class DeleteSensorCommandHandler:
 
 
 class RecordTelemetryCommandHandler:
-    def __init__(self, telemetry_repo: ITelemetryRepository, sensor_repo: ISensorRepository, alerting_service: IAlertingService):
+    def __init__(self, telemetry_repo: ITelemetryRepository, sensor_repo: ISensorRepository, event_bus):
         self._telemetry_repo = telemetry_repo
         self._sensor_repo = sensor_repo
-        self._alerting_service = alerting_service
+        self._event_bus = event_bus
         
     def handle(self, command: RecordTelemetryCommand) -> None:
         if self._sensor_repo.get_by_id(command.sensor_id) is None:
@@ -83,11 +85,17 @@ class RecordTelemetryCommandHandler:
         
         self._telemetry_repo.save(TelemetryFactory.create(sensor_id=command.sensor_id, value=command.value))
 
-        self._alerting_service.check_and_alert(
-            sensor_id=command.sensor_id, 
-            value=command.value
-        )
+        # self._alerting_service.check_and_alert(
+        #     sensor_id=command.sensor_id, 
+        #     value=command.value
+        # )
 
+        event = TelemetryRecorded(
+            sensor_id=command.sensor_id,
+            value=command.value,
+            happened_at=datetime.now(timezone.utc)
+        )
+        self._event_bus.publish(event)
 
 class GetTelemetryHistoryQueryHandler:
     def __init__(self, read_repo: ITelemetryReadRepository):
