@@ -69,6 +69,16 @@ Content-Type: application/json
     "value": 12.5
 }
 
+### Telemetry Send 
+
+POST {{baseUrl}}/telemetry-send
+Content-Type: application/json
+
+{
+    "sensor_id": 1,
+    "value": 80.01
+}
+
 ### Get History of Telemetry( Lim 10 )
 GET {{baseUrl}}/telemetry-history?mac_address=00:1A:2B:3C:4D:5E&limit=10
 Authorization: Bearer {{token}}
