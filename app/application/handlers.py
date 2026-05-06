@@ -103,3 +103,34 @@ class GetTelemetryHistoryQueryHandler:
 
     def handle(self, query: GetTelemetryHistoryQuery) -> list[TelemetryReadModel]:
         return self._read_repo.get_history(query.mac_address, query.user_id, query.limit)
+    
+class RecordTelemetryCommandHandlerSync:
+    # Синхронний варіант: handler напряму викликає alerting_service через інтерфейс.
+    # Якщо сервіс падає основна операція не відкочується (try/except).
+    def __init__(
+        self,
+        telemetry_repo: ITelemetryRepository,
+        sensor_repo: ISensorRepository,
+        alerting_service: IAlertingService,
+    ):
+        self._telemetry_repo = telemetry_repo
+        self._sensor_repo = sensor_repo
+        self._alerting_service = alerting_service
+
+    def handle(self, command: RecordTelemetryCommand) -> None:
+        if self._sensor_repo.get_by_id(command.sensor_id) is None:
+            raise DomainError("Sensor not found")
+
+        self._telemetry_repo.save(
+            TelemetryFactory.create(sensor_id=command.sensor_id, value=command.value)
+        )
+
+        try:
+            self._alerting_service.check_and_alert(
+                sensor_id=command.sensor_id,
+                value=command.value,
+            )
+        except Exception:
+            # Побічний ефект не ламає основну операцію.
+            # Телеметрія вже збережена — клієнт отримає 201.
+            pass
