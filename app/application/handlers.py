@@ -1,6 +1,7 @@
 from app.application.commands import RegisterUserCommand, CreateLocationCommand, AddSensorCommand, RecordTelemetryCommand, LoginUserCommand, DeleteSensorCommand
 from app.application.queries import GetTelemetryHistoryQuery
 from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
+from app.domain.services import IAlertingService
 from app.application.read_model import TelemetryReadModel
 from app.application.read_repository import ITelemetryReadRepository
 from app.domain.entities import User, Email, Location, Sensor, MacAddress
@@ -71,14 +72,21 @@ class DeleteSensorCommandHandler:
 
 
 class RecordTelemetryCommandHandler:
-    def __init__(self, telemetry_repo: ITelemetryRepository, sensor_repo: ISensorRepository):
+    def __init__(self, telemetry_repo: ITelemetryRepository, sensor_repo: ISensorRepository, alerting_service: IAlertingService):
         self._telemetry_repo = telemetry_repo
         self._sensor_repo = sensor_repo
-
+        self._alerting_service = alerting_service
+        
     def handle(self, command: RecordTelemetryCommand) -> None:
         if self._sensor_repo.get_by_id(command.sensor_id) is None:
             raise DomainError("Sensor not found")
+        
         self._telemetry_repo.save(TelemetryFactory.create(sensor_id=command.sensor_id, value=command.value))
+
+        self._alerting_service.check_and_alert(
+            sensor_id=command.sensor_id, 
+            value=command.value
+        )
 
 
 class GetTelemetryHistoryQueryHandler:

@@ -14,6 +14,7 @@ from app.application.handlers import (
     RecordTelemetryCommandHandler,
     GetTelemetryHistoryQueryHandler
 )
+from app.infrastructure.services import ConsoleAlertingService
 
 def get_register_handler() -> RegisterUserCommandHandler:
     return RegisterUserCommandHandler(user_repo=SqlAlchemyUserRepository())
@@ -39,7 +40,8 @@ def get_delete_sensor_handler() -> DeleteSensorCommandHandler:
 def get_record_telemetry_handler() -> RecordTelemetryCommandHandler:
     return RecordTelemetryCommandHandler(
         telemetry_repo=SqlAlchemyTelemetryRepository(),
-        sensor_repo=SqlAlchemySensorRepository()
+        sensor_repo=SqlAlchemySensorRepository(),
+        alerting_service=ConsoleAlertingService(threshold=80.0)
     )
 
 def get_telemetry_history_handler() -> GetTelemetryHistoryQueryHandler:
