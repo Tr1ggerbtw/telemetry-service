@@ -6,5 +6,5 @@ class ConsoleAlertingService(IAlertingService):
 
     def check_and_alert(self, sensor_id: int, value: float) -> None:
         if value > self._threshold:
-            print(f"{sensor_id} зафіксував критичне значення: {value} (Норма: {self._threshold})")
+            print(f"Сенсор з айді {sensor_id} зафіксував критичне значення: {value} (Норма: {self._threshold})")
         # ??? 
