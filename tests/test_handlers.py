@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import MagicMock
 from app.application.commands import (
     RegisterUserCommand, AddSensorCommand,
     DeleteSensorCommand, RecordTelemetryCommand
@@ -166,14 +167,18 @@ def test_record_telemetry_success():
     telemetry_repo = InMemoryTelemetryRepository()
     sensor_repo = InMemorySensorRepository()
     sensor_repo.save(Sensor(mac_address=MacAddress("AA:BB:CC:DD:EE:FF"), location_id=1, sensor_id=1))
+    
+    dummy_event_bus = MagicMock()
 
-    handler = RecordTelemetryCommandHandler(telemetry_repo, sensor_repo)
+    handler = RecordTelemetryCommandHandler(telemetry_repo, sensor_repo, dummy_event_bus)
     handler.handle(RecordTelemetryCommand(sensor_id=1, value=50.0))
 
     assert len(telemetry_repo._records) == 1
+    dummy_event_bus.publish.assert_called_once()
 
 
 def test_record_telemetry_sensor_not_found_raises():
-    handler = RecordTelemetryCommandHandler(InMemoryTelemetryRepository(), InMemorySensorRepository())
+    dummy_event_bus = MagicMock()
+    handler = RecordTelemetryCommandHandler(InMemoryTelemetryRepository(), InMemorySensorRepository(), dummy_event_bus)
     with pytest.raises(DomainError):
         handler.handle(RecordTelemetryCommand(sensor_id=999, value=50.0))
