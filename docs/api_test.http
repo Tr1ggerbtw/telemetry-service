@@ -83,6 +83,10 @@ Content-Type: application/json
 GET {{baseUrl}}/telemetry-history?mac_address=00:1A:2B:3C:4D:5E&limit=10
 Authorization: Bearer {{token}}
 
+### Get Analytics Metrics
+GET {{baseUrl}}/analytics/metrics
+Authorization: Bearer {{token}}
+
 ### Delete Sensor
 DELETE {{baseUrl}}/delete-sensor
 Content-Type: application/json
