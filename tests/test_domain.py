@@ -1,7 +1,7 @@
 import pytest
-from app.domain.entities import Email, MacAddress
-from app.domain.factories import TelemetryFactory
-from app.domain.exceptions import InvalidEmailError, InvalidMacAddressError, InvalidTelemetryValueError
+from app.telemetry.domain.entities import Email, MacAddress
+from app.telemetry.domain.factories import TelemetryFactory
+from app.telemetry.domain.exceptions import InvalidEmailError, InvalidMacAddressError, InvalidTelemetryValueError
 
 def test_valid_email_creates_object():
     email = Email("test@gmail.com")

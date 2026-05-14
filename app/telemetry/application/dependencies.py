@@ -1,11 +1,11 @@
-from app.infrastructure.repositories import (
+from app.telemetry.infrastructure.repositories import (
     SqlAlchemyUserRepository,
     SqlAlchemyLocationRepository,
     SqlAlchemySensorRepository,
     SqlAlchemyTelemetryRepository,
     SqlAlchemyTelemetryReadRepository
 )
-from app.application.handlers import (
+from app.telemetry.application.handlers import (
     RegisterUserCommandHandler,
     LoginCommandHandler,
     CreateLocationCommandHandler,
@@ -15,9 +15,9 @@ from app.application.handlers import (
     GetTelemetryHistoryQueryHandler,
     RecordTelemetryCommandHandlerSync
 )
-from app.infrastructure.services import ConsoleAlertingService
-from app.infrastructure.event_bus import EventBus
-from app.domain.events import TelemetryRecorded
+from app.telemetry.infrastructure.services import ConsoleAlertingService
+from app.shared.event_bus import EventBus
+from app.telemetry.domain.events import TelemetryRecorded
 
 global_event_bus = EventBus()
 

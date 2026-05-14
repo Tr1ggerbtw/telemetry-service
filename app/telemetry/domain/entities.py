@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
-from app.domain.exceptions import InvalidEmailError, InvalidMacAddressError
-from app.domain.validators import is_valid_email, is_valid_mac_address
+from app.telemetry.domain.exceptions import InvalidEmailError, InvalidMacAddressError
+from app.telemetry.domain.validators import is_valid_email, is_valid_mac_address
 
 @dataclass(frozen=True)
 class Email:

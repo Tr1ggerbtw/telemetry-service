@@ -1,9 +1,9 @@
-from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
-from app.domain.entities import User, Email, Location, Sensor, MacAddress, Telemetry
-from app.infrastructure.orm_models import UserModel, LocationModel, SensorModel, TelemetryModel
-from app.application.read_repository import ITelemetryReadRepository
-from app.application.read_model import TelemetryReadModel
-from app.db import db
+from app.telemetry.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
+from app.telemetry.domain.entities import User, Email, Location, Sensor, MacAddress, Telemetry
+from app.telemetry.infrastructure.orm_models import UserModel, LocationModel, SensorModel, TelemetryModel
+from app.telemetry.application.read_repository import ITelemetryReadRepository
+from app.telemetry.application.read_model import TelemetryReadModel
+from app.shared.db import db
 
 class SqlAlchemyUserRepository(IUserRepository):
     def save(self, user: User) -> None:

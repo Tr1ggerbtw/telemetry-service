@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token
-from app.application.dependencies import get_register_handler, get_login_handler
-from app.application.commands import RegisterUserCommand, LoginUserCommand
-from app.domain.exceptions import DomainError, InvalidEmailError
+from app.telemetry.application.dependencies import get_register_handler, get_login_handler
+from app.telemetry.application.commands import RegisterUserCommand, LoginUserCommand
+from app.telemetry.domain.exceptions import DomainError, InvalidEmailError
 
 auth = Blueprint("auth", __name__)
 

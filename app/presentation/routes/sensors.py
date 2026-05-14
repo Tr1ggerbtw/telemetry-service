@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.application.commands import AddSensorCommand, DeleteSensorCommand
-from app.application.dependencies import get_add_sensor_handler, get_delete_sensor_handler 
-from app.domain.exceptions import InvalidMacAddressError, DomainError, AccessDeniedError
+from app.telemetry.application.commands import AddSensorCommand, DeleteSensorCommand
+from app.telemetry.application.dependencies import get_add_sensor_handler, get_delete_sensor_handler 
+from app.telemetry.domain.exceptions import InvalidMacAddressError, DomainError, AccessDeniedError
 
 sensors = Blueprint("sensors", __name__)
 @sensors.route("/create-sensor", methods=['POST'] )

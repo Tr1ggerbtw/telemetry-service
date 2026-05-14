@@ -1,16 +1,16 @@
 import pytest
 from unittest.mock import MagicMock
-from app.application.commands import (
+from app.telemetry.application.commands import (
     RegisterUserCommand, AddSensorCommand,
     DeleteSensorCommand, RecordTelemetryCommand
 )
-from app.application.handlers import (
+from app.telemetry.application.handlers import (
     RegisterUserCommandHandler, AddSensorCommandHandler,
     DeleteSensorCommandHandler, RecordTelemetryCommandHandler
 )
-from app.domain.entities import User, Email, Location, Sensor, MacAddress
-from app.domain.exceptions import DomainError, AccessDeniedError
-from app.domain.repositories import (
+from app.telemetry.domain.entities import User, Email, Location, Sensor, MacAddress
+from app.telemetry.domain.exceptions import DomainError, AccessDeniedError
+from app.telemetry.domain.repositories import (
     IUserRepository, ILocationRepository,
     ISensorRepository, ITelemetryRepository
 )

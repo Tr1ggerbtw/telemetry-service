@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
-from app.domain.entities import User, Telemetry
-from app.domain.validators import is_valid_email, is_valid_telemetry_value
-from app.domain.exceptions import InvalidEmailError, InvalidTelemetryValueError
+from app.telemetry.domain.entities import User, Telemetry
+from app.telemetry.domain.validators import is_valid_email, is_valid_telemetry_value
+from app.telemetry.domain.exceptions import InvalidEmailError, InvalidTelemetryValueError
 
 class UserFactory:
     @staticmethod

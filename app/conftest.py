@@ -1,6 +1,6 @@
 import pytest
 from app import create_app
-from app.db import db
+from app.shared.db import db
 
 @pytest.fixture()
 def client():

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import Config
-from app.db import db, jwt
+from app.shared.db import db, jwt
 from app.presentation.routes.auth import auth
 from app.presentation.routes.locations import locations
 from app.presentation.routes.sensors import sensors

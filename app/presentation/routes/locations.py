@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.application.commands import CreateLocationCommand
-from app.application.dependencies import get_create_location_handler
-from app.domain.exceptions import DomainError
+from app.telemetry.application.commands import CreateLocationCommand
+from app.telemetry.application.dependencies import get_create_location_handler
+from app.telemetry.domain.exceptions import DomainError
 
 locations = Blueprint("locations", __name__)
 

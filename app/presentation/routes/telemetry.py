@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.application.commands import RecordTelemetryCommand
-from app.application.queries import GetTelemetryHistoryQuery
-from app.application.dependencies import get_record_telemetry_handler, get_telemetry_history_handler
-from app.domain.exceptions import InvalidTelemetryValueError, DomainError
+from app.telemetry.application.commands import RecordTelemetryCommand
+from app.telemetry.application.queries import GetTelemetryHistoryQuery
+from app.telemetry.application.dependencies import get_record_telemetry_handler, get_telemetry_history_handler
+from app.telemetry.domain.exceptions import InvalidTelemetryValueError, DomainError
 
 telemetry = Blueprint("telemetry", __name__)
 

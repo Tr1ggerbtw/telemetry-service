@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.application.read_model import TelemetryReadModel
+from app.telemetry.application.read_model import TelemetryReadModel
 
 class ITelemetryReadRepository(ABC):
     @abstractmethod

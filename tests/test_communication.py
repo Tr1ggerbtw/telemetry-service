@@ -1,16 +1,16 @@
 from unittest.mock import MagicMock, patch, call
 import pytest
 
-from app.application.commands import RecordTelemetryCommand
-from app.application.handlers import (
+from app.telemetry.application.commands import RecordTelemetryCommand
+from app.telemetry.application.handlers import (
     RecordTelemetryCommandHandler,
     RecordTelemetryCommandHandlerSync,
 )
-from app.domain.exceptions import DomainError
-from app.domain.services import IAlertingService
-from app.domain.events import TelemetryRecorded
-from app.infrastructure.services import ConsoleAlertingService
-from app.infrastructure.event_bus import EventBus
+from app.telemetry.domain.exceptions import DomainError
+from app.telemetry.domain.services import IAlertingService
+from app.telemetry.domain.events import TelemetryRecorded
+from app.telemetry.infrastructure.services import ConsoleAlertingService
+from app.shared.event_bus import EventBus
 
 
 def make_sensor_repo(found: bool = True):

@@ -1,5 +1,5 @@
-from app.domain.services import IAlertingService
-from app.domain.events import TelemetryRecorded
+from app.telemetry.domain.services import IAlertingService
+from app.telemetry.domain.events import TelemetryRecorded
 class ConsoleAlertingService(IAlertingService):
     def __init__(self, threshold: float = 80.0):
         self._threshold = threshold

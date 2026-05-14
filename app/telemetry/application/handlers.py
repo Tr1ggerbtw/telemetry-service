@@ -1,13 +1,13 @@
-from app.application.commands import RegisterUserCommand, CreateLocationCommand, AddSensorCommand, RecordTelemetryCommand, LoginUserCommand, DeleteSensorCommand
-from app.application.queries import GetTelemetryHistoryQuery
-from app.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
-from app.domain.services import IAlertingService
-from app.application.read_model import TelemetryReadModel
-from app.application.read_repository import ITelemetryReadRepository
-from app.domain.entities import User, Email, Location, Sensor, MacAddress
-from app.domain.exceptions import DomainError, AccessDeniedError
-from app.domain.factories import TelemetryFactory
-from app.domain.events import TelemetryRecorded
+from app.telemetry.application.commands import RegisterUserCommand, CreateLocationCommand, AddSensorCommand, RecordTelemetryCommand, LoginUserCommand, DeleteSensorCommand
+from app.telemetry.application.queries import GetTelemetryHistoryQuery
+from app.telemetry.domain.repositories import IUserRepository, ILocationRepository, ISensorRepository, ITelemetryRepository
+from app.telemetry.domain.services import IAlertingService
+from app.telemetry.application.read_model import TelemetryReadModel
+from app.telemetry.application.read_repository import ITelemetryReadRepository
+from app.telemetry.domain.entities import User, Email, Location, Sensor, MacAddress
+from app.telemetry.domain.exceptions import DomainError, AccessDeniedError
+from app.telemetry.domain.factories import TelemetryFactory
+from app.telemetry.domain.events import TelemetryRecorded
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 

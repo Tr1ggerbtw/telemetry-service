@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.domain.entities import User, Email, Sensor, MacAddress, Telemetry, Location
+from app.telemetry.domain.entities import User, Email, Sensor, MacAddress, Telemetry, Location
 
 class IUserRepository(ABC):
     @abstractmethod
